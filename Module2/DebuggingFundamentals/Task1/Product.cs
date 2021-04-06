@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Task1
 {
-    public class Product //: IEquatable<Product>
+    public class Product : IEquatable<Product>    
     {
         public Product(string name, double price)
         {
@@ -13,36 +13,39 @@ namespace Task1
 
         public string Name { get; set; }
 
-        public double Price { get; set; }
+        public double Price { get; set; }          
 
         public override bool Equals(object obj)
         {
-            if (obj == null || !(obj is Product))
-                return false;
+            if (obj == null) return false;
 
-            Product product = obj as Product;
+            Product productObj = obj as Product;
 
-            if((Name, Price) == (product.Name, product.Price))
-                return true;
+            if (productObj == null) return false;
 
-            return false;
+            return Equals(productObj);
         }
 
         public override int GetHashCode() => (Name, Price).GetHashCode();
 
-        // When using IEquatable<T>
+        public bool Equals(Product other) =>
+            (other != null) &&
+            (Name, Price) == (other.Name, other.Price);
 
-        //public static bool operator ==(Product product1, Product product2) =>
-        //   Equals(product1, product2);
+        public static bool operator ==(Product product1, Product product2)
+        {
+            if (((object)product1 == null) || ((object)product2 == null))
+                return Equals(product1, product2);
 
-        //public static bool operator !=(Product product1, Product product2) =>
-        //    !Equals(product1, product2);
+            return product1.Equals(product2);
+        }
 
-        //public bool Equals(Product other) =>
-        //    (other != null) &&
-        //    (Name, Price) == (other.Name, other.Price);
+        public static bool operator !=(Product product1, Product product2)
+        {
+            if (((object)product1 == null) || ((object)product2 == null))
+                return !Equals(product1, product2);
 
-        //public override bool Equals(object obj) =>
-        //    (obj is Product productObj) && Equals(productObj);
+            return !(product1.Equals(product2));
+        }
     }
 }
