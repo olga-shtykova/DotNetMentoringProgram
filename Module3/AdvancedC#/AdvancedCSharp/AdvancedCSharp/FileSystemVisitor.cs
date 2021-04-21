@@ -8,7 +8,7 @@ namespace AdvancedCSharp
 
     public delegate void ElementFoundDelegate(object sender, AnswerEventArgs<FileSystemInfo> e);
 
-    public class FileSystemVisitor
+    public class FileSystemVisitor 
     {
         private readonly DirectoryInfo _startDirectory;
 
@@ -16,13 +16,17 @@ namespace AdvancedCSharp
 
         private readonly Func<FileSystemInfo, bool> _filter;
 
+        public FileSystemVisitor()
+        { }
 
         public FileSystemVisitor(string path,
-            Func<FileSystemInfo, bool> filter = null) : this(new DirectoryInfo(path), filter)
+            Func<FileSystemInfo, bool> filter = null) 
+            : this(new DirectoryInfo(path), filter)
         { }
 
 
-        public FileSystemVisitor(DirectoryInfo startDirectory, Func<FileSystemInfo, bool> filter = null)
+        public FileSystemVisitor(DirectoryInfo startDirectory,
+            Func<FileSystemInfo, bool> filter = null)
         {
             _files = new List<FileSystemInfo>();
             _startDirectory = startDirectory;
@@ -31,6 +35,8 @@ namespace AdvancedCSharp
 
         public bool StopSearchFlag { get; set; }
         public bool SkipElementFlag { get; set; }
+
+        private bool _stopSearch;
 
         public event EventDelegate Start;
         public event EventDelegate Finish;
@@ -42,12 +48,19 @@ namespace AdvancedCSharp
 
         public IEnumerable<FileSystemInfo> GetFilesInDirectories()
         {
-            Start?.Invoke();
+            var startDirectory = _startDirectory;
 
-            foreach (var fileSystemInfo in IterateThroughDirectories(_startDirectory))
+            if (!_startDirectory.Exists)
+            {
+                throw new DirectoryNotFoundException($"Directory was not found.");
+            }
+
+            Start?.Invoke();            
+
+            foreach (var fileSystemInfo in IterateThroughDirectories(startDirectory))
             {
                 yield return fileSystemInfo;
-            }
+            } 
 
             Finish?.Invoke();
         }
@@ -60,7 +73,7 @@ namespace AdvancedCSharp
             {
                 e.FoundItem = fileSystemInfo;
 
-                if (StopSearchFlag) break;
+                if (_stopSearch) break;                
 
                 if (fileSystemInfo is FileInfo file)
                 {
@@ -83,10 +96,11 @@ namespace AdvancedCSharp
                     }
                 }
 
-                if ((!SkipElementFlag) || (!SkipElementFlag && _filter(fileSystemInfo)))
+                if ((!SkipElementFlag) || (!SkipElementFlag && _filter(fileSystemInfo)))                
                     _files.Add(fileSystemInfo);
-                SkipElementFlag = false;
-            }
+                    SkipElementFlag = false;
+                _stopSearch = StopSearchFlag;
+            }        
         }
     }
 }
