@@ -1,4 +1,5 @@
 using AdvancedCSharp;
+using FileVisitorClassLibrary;
 using System;
 using System.IO;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace TestProject
     public class FileVisitorTest
     {      
         private const string folderName = "Directory";
-        private FileSystemVisitor _fsvisitor;
-        private Func<FileSystemInfo, bool> _filter;
+        private FileSystemVisitor _visitor;
+        private Func<FileSystemInfo, bool> _filter;        
 
         private string GetTestFolderPath()
         {
@@ -25,9 +26,7 @@ namespace TestProject
         {
             _filter = filter => filter.Name.Contains("txt");
 
-            _fsvisitor = new FileSystemVisitor(GetTestFolderPath(), _filter);
-
-            //_e = new AnswerEventArgs<FileSystemInfo>();
+            _visitor = new FileSystemVisitor(GetTestFolderPath(), _filter);
         }
 
         [Fact]
@@ -36,9 +35,9 @@ namespace TestProject
             var eventInvokeCounter = 0;
             var expectedValue = 1;
 
-            _fsvisitor.Start += () => eventInvokeCounter++;
+            _visitor.Start += (s, e) => eventInvokeCounter++;
 
-            var result = _fsvisitor.GetFilesInDirectories().ToArray();
+            var result = _visitor.GetFilesInDirectories().ToArray();
 
             Assert.Equal(expectedValue, eventInvokeCounter);
         }
@@ -49,9 +48,9 @@ namespace TestProject
             var eventInvokeCounter = 0;
             var expectedValue = 1;
 
-            _fsvisitor.Finish += () => eventInvokeCounter++;
+            _visitor.Start += (s, e) => eventInvokeCounter++;
 
-            var result = _fsvisitor.GetFilesInDirectories().ToArray();
+            var result = _visitor.GetFilesInDirectories().ToArray();
 
             Assert.Equal(expectedValue, eventInvokeCounter);
         }
@@ -60,13 +59,13 @@ namespace TestProject
         public void DirectoryFoundEventTest()
         {
             var eventInvokeCounter = 0;
-            var expectedValue = 1;
+            var expectedValue = 2;
 
-            _fsvisitor = new FileSystemVisitor(GetTestFolderPath(), null);
+            _visitor = new FileSystemVisitor(GetTestFolderPath(), null);
 
-            _fsvisitor.DirectoryFound += (_fsvisitor, e) => eventInvokeCounter++;
+            _visitor.DirectoryFound += (s, e) => eventInvokeCounter++;
 
-            var result = _fsvisitor.GetFilesInDirectories().ToArray();
+            var result = _visitor.GetFilesInDirectories().ToArray();
 
             Assert.Equal(expectedValue, eventInvokeCounter);
         }
@@ -75,11 +74,11 @@ namespace TestProject
         public void FilteredDirectoryFoundEventTest()
         {
             var eventInvokeCounter = 0;
-            var expectedValue = 1;
+            var expectedValue = 2;
 
-            _fsvisitor.FilteredDirectoryFound += (_fsvisitor, e) => eventInvokeCounter++;
+            _visitor.FilteredDirectoryFound += (s, e) => eventInvokeCounter++;
 
-            var result = _fsvisitor.GetFilesInDirectories().ToArray();
+            var result = _visitor.GetFilesInDirectories().ToArray();
 
             Assert.Equal(expectedValue, eventInvokeCounter);
         }
@@ -88,13 +87,13 @@ namespace TestProject
         public void FileFoundEventTest()
         {
             var eventInvokeCounter = 0;
-            var expectedValue = 5;
+            var expectedValue = 4;
 
-            _fsvisitor = new FileSystemVisitor(GetTestFolderPath(), null);
+            _visitor = new FileSystemVisitor(GetTestFolderPath(), null);
 
-            _fsvisitor.FileFound += (_fsvisitor, e) => eventInvokeCounter++;
+            _visitor.FileFound += (s, e) => eventInvokeCounter++;
 
-            var result = _fsvisitor.GetFilesInDirectories().ToArray();
+            var result = _visitor.GetFilesInDirectories().ToArray();
 
             Assert.Equal(expectedValue, eventInvokeCounter);
         }
@@ -103,11 +102,11 @@ namespace TestProject
         public void FilteredFileFoundEventTest()
         {
             var eventInvokeCounter = 0;
-            var expectedValue = 5;
+            var expectedValue = 4;
 
-            _fsvisitor.FilteredFileFound += (_fsvisitor, e) => eventInvokeCounter++;
+            _visitor.FilteredFileFound += (s, e) => eventInvokeCounter++;
 
-            var result = _fsvisitor.GetFilesInDirectories().ToArray();
+            var result = _visitor.GetFilesInDirectories().ToArray();
 
             Assert.Equal(expectedValue, eventInvokeCounter);
         }
