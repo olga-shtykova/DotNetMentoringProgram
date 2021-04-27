@@ -7,31 +7,34 @@ namespace Task2
     {
         public int Parse(string stringValue)
         {
-            int number = 0;            
-            char sign = '+';
+            int number = 0;
+            bool sign = false;
 
-            try
+
+            if (stringValue == null)
             {
-                if (string.IsNullOrEmpty(stringValue))
+                throw new ArgumentNullException(stringValue);
+            }
+
+            if (Regex.Match(stringValue, @"^(?:\-|\+)?\d+\s*$").Success && stringValue != "")
+            {
+                string newStringValue = stringValue.TrimEnd();
+
+                if (newStringValue[0] == '-')
                 {
-                    throw new ArgumentNullException(stringValue);
+                    sign = true;
                 }
 
-                if (Regex.Match(stringValue, @"^(?:\-|\+|\s)?\d+\s*$").Success)
+                foreach (var c in newStringValue)
                 {
-                    foreach (var c in stringValue)
+                    if (c != '+' && c != '-')
                     {
-                        if (c == '-')
+                        if (newStringValue == "-2147483648" || newStringValue == "2147483647")
                         {
-                            sign = '-';
+                            number *= 10;
+                            number += c - '0';
                         }
-
-                        if (c == '+')
-                        {
-                            sign = '+';
-                        }
-
-                        if (c != '+' && c != '-')
+                        else
                         {
                             checked
                             {
@@ -39,31 +42,19 @@ namespace Task2
                                 number += c - '0';
                             }
                         }
-
                     }
-
-                    if (sign == '-')
-                    {
-                        unchecked
-                        {
-                            number = number * -1;
-                        }
-                        
-                    }
-                    else
-                    {
-                        number = number * 1;
-                    }                    
-
-                    return number;
                 }
-                else
-                    throw new FormatException("Invalid string format");
+
+                if (sign)
+                {
+                    number = number * -1;
+                }
+
+                return number;
             }
-            catch (OverflowException)
-            {
-                throw new OverflowException();
-            }
+            else
+                throw new FormatException("Invalid string format");
+
         }
     }
 }

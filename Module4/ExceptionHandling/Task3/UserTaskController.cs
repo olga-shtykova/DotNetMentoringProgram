@@ -32,19 +32,7 @@ namespace Task3
                 int result = _taskService.AddTaskForUser(userId, task);
 
                 return null; ;
-            }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                return ex.Message;
-            }
-            catch (ArgumentNullException exc)
-            {
-                return exc.Message;
-            }
-            catch (ArgumentException e)
-            {
-                return e.Message;
-            }
+            }            
             catch (Exception exception)
             {
                 return exception.Message;
