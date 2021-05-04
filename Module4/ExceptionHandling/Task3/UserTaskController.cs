@@ -1,5 +1,5 @@
-﻿using System;
-using Task3.DoNotChange;
+﻿using Task3.DoNotChange;
+using Task3.Exceptions;
 
 namespace Task3
 {
@@ -33,9 +33,9 @@ namespace Task3
 
                 return null; ;
             }            
-            catch (Exception exception)
+            catch (BaseException e)
             {
-                return exception.Message;
+                return ErrorHandler.GetErrorMessage(e);
             }
         }
     }
