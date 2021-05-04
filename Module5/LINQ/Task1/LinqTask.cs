@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Task1.DoNotChange;
 
 namespace Task1
@@ -15,7 +14,7 @@ namespace Task1
                 throw new ArgumentNullException();
             }
 
-            return customers.Where(o => o.Orders.Sum(o => o.Total) > limit);
+            return customers.Where(o => o.Orders != null && o.Orders.Sum(o => o.Total) > limit);
         }
                
         public static IEnumerable<(Customer customer, IEnumerable<Supplier> suppliers)> Linq2(
@@ -28,13 +27,8 @@ namespace Task1
                 throw new ArgumentNullException();
             }
 
-            var result = new List<(Customer customer, IEnumerable<Supplier> suppliers)>();
-
-            foreach (var c in customers)
-            {
-                result.Add((c, suppliers.Where(s => s.City == c.City && s.Country == c.Country)
-                    .ToList()));
-            }
+            var result = customers
+                .Select(c => (c, suppliers.Where(s => s.City == c.City && s.Country == c.Country)));
 
             return result;
         }
@@ -49,11 +43,10 @@ namespace Task1
                 throw new ArgumentNullException();
             }
 
-            var result = customers.Select(c =>
-            (c, suppliers.GroupBy(s =>
-            new { s.Country, s.City })
-            .Where(s => s.Key.Country == c.Country && s.Key.City == c.City)
-            .SelectMany(s => s)));
+            var result = customers.GroupJoin(suppliers,
+                c => new { c.City, c.Country },
+                s => new { s.City, s.Country },
+                (c, s) => (c, s));
 
             return result;
         }
@@ -65,7 +58,7 @@ namespace Task1
                 throw new ArgumentNullException();
             }
 
-            return customers.Where(c => c.Orders.Any(o => o.Total > limit));
+            return customers.Where(c => c.Orders != null && c.Orders.Any(o => o.Total > limit));
         }
                 
         public static IEnumerable<(Customer customer, DateTime dateOfEntry)> Linq4(
@@ -77,10 +70,8 @@ namespace Task1
                 throw new ArgumentNullException();
             }
 
-            var result = customers.Where(c => c.Orders.Any())
-                .Select(c => (c, c.Orders.OrderBy(o => o.OrderDate)
-                .Select(o => o.OrderDate).First()))
-                .ToList();
+            var result = customers.Where(c => c.Orders != null && c.Orders.Any())
+                .Select(c => (c, c.Orders.Min(o => o.OrderDate)));
 
             return result;    
         } 
@@ -95,8 +86,8 @@ namespace Task1
             }
 
             var result = Linq4(customers)
-                .OrderBy(c => c.dateOfEntry.Year)
-                .ThenBy(c => c.dateOfEntry.Month)
+                .OrderBy(c => c.dateOfEntry)
+                .ThenBy(c => c.dateOfEntry)
                 .ThenByDescending(c => c.customer.Orders.Sum(o => o.Total))
                 .ThenBy(c => c.customer.CompanyName);
 
@@ -120,17 +111,6 @@ namespace Task1
         
         public static IEnumerable<Linq7CategoryGroup> Linq7(IEnumerable<Product> products)
         {
-            /* example of Linq7result
-
-             category - Beverages
-	            UnitsInStock - 39
-		            price - 18.0000
-		            price - 19.0000
-	            UnitsInStock - 17
-		            price - 18.0000
-		            price - 19.0000
-             */
-
             if (products == null)
             {
                 throw new ArgumentNullException();
@@ -198,17 +178,12 @@ namespace Task1
                 throw new ArgumentNullException();
             }
 
-            var res = suppliers.OrderBy(s => s.Country.Length)
+            var result = suppliers.OrderBy(s => s.Country.Length)
                 .ThenBy(s => s.Country)
-                .GroupBy(s => s.Country);
+                .Select(s => s.Country).Distinct()
+                .ToList();                      
 
-            var sb = new StringBuilder();
-            foreach (var item in res)
-            {
-                sb.Append(item.Key);
-            }
-
-            return sb.ToString();
+            return String.Join("", result); 
         }
     }
 }
