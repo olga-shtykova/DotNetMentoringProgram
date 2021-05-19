@@ -11,17 +11,24 @@ namespace Task2
             var t = obj.GetType();
             var prop = t.GetProperty(propertyName);
 
+            // Setter for the property will work only in case of readonly-automatic property.
             prop.DeclaringType.GetField($"<{propertyName}>k__BackingField",
                BindingFlags.Instance | BindingFlags.NonPublic).SetValue(obj, newValue);
         }
 
-        public static void SetReadOnlyField(this object obj, string filedName, object newValue)
+        public static void SetReadOnlyField(this object obj, string fieldName, object newValue)
         {
             var t = obj.GetType();
 
-            FieldInfo field = t.GetField(filedName);
-
-            field.SetValue(obj, newValue);
+            if (t.GetField(fieldName) != null) 
+            {
+                FieldInfo field = t.GetField(fieldName);
+                field.SetValue(obj, newValue);
+            }
+            else
+            {
+                throw new ArgumentNullException();
+            }            
         }
     }
 }

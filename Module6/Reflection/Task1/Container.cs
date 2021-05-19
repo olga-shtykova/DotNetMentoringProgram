@@ -12,33 +12,29 @@ namespace Task1
 
         public void AddAssembly(Assembly assembly)
         {
-            foreach (var t in assembly.ExportedTypes)
+            // To insert dependency directly to the field is not the best practice. 
+            // However, declaration of "Import Attribute" allows import for the fields as well.
+            var typesToResolve = assembly.GetTypes()
+                .Where(t => t.IsDefined(typeof(ImportConstructorAttribute)) ||
+                 t.IsDefined(typeof(ExportAttribute)) ||
+                    t.GetProperties().Any(p => p.IsDefined(typeof(ImportAttribute))) ||
+                t.GetFields().Any(f => f.IsDefined(typeof(ImportAttribute))))
+                .ToList();
+
+            foreach (var t in typesToResolve)
             {
-                var importCtorAttribute = t.GetCustomAttribute<ImportConstructorAttribute>();
-                var importAttribute = GetImportAttributeProperties(t);
-
-                if (importCtorAttribute != null || importAttribute.Any())
-                {
-                    _registeredTypes.Add(t, t);
-                }
-
-                var exportAttributes = t.GetCustomAttributes<ExportAttribute>();
-                foreach (var exportAttribute in exportAttributes)
-                {                    
-                    if (exportAttribute.Contract == null)
-                    {
-                        _registeredTypes.Add(t, t);                        
-                    }
-                    else
-                    {
-                        _registeredTypes.Add(exportAttribute.Contract, t);                       
-                    }
-                }
+                var exportAttribute = t.GetCustomAttribute<ExportAttribute>();
+                if (exportAttribute != null && exportAttribute.Contract != null)
+                    AddType(t, exportAttribute.Contract);
+                AddType(t);
             }
         }                
 
         public void AddType(Type type)
         {
+            if (_registeredTypes.ContainsKey(type))
+                GetInstance(type);
+            
             _registeredTypes.Add(type, type);
         }
 
@@ -56,7 +52,7 @@ namespace Task1
         {
             if (!_registeredTypes.ContainsKey(type))
             {
-                throw new Exception("Cannot create instance.");
+                throw new ArgumentException($"Cannot create instance of {type.FullName}. The dependency was not provided.");
             }
 
             Type dependentType = _registeredTypes[type];
@@ -78,18 +74,23 @@ namespace Task1
 
         private void Resolve(Type type, object instance)
         {
-            var propertiesInfo = GetImportAttributeProperties(type);
+            var propertiesInfo = type.GetProperties()
+                .Where(p => p.GetCustomAttribute<ImportAttribute>() != null);
 
             foreach (var p in propertiesInfo)
             {
                 var property = GetInstance(p.PropertyType);
                 p.SetValue(instance, property);
             }
-        }
 
-        private IEnumerable<PropertyInfo> GetImportAttributeProperties(Type type)
-        {
-            return type.GetProperties().Where(p => p.GetCustomAttribute<ImportAttribute>() != null);
+            var fieldsInfo = type.GetFields()
+                .Where(p => p.GetCustomAttribute<ImportAttribute>() != null);
+
+            foreach (var p in fieldsInfo)
+            {
+                var property = GetInstance(p.FieldType);
+                p.SetValue(instance, property);
+            }
         }
     }
 }
