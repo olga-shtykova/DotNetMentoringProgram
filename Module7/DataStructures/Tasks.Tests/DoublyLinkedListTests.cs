@@ -7,6 +7,16 @@ namespace Tasks.Tests
     public class DoublyLinkedListTests
     {
         [Fact]
+        public void Should_Return_Length_Is_Zero()
+        {
+            var list = new DoublyLinkedList<int>();            
+
+            var actualLength = list.Length;
+
+            actualLength.Should().Be(0);
+        }
+
+        [Fact]
         public void Should_Increment_Length_Of_The_List_When_Element_Added()
         {
             var list = new DoublyLinkedList<int>();
