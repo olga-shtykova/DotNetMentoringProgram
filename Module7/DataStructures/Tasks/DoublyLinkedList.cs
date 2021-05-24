@@ -160,12 +160,11 @@ namespace Tasks
             {
                 previous.Next = current.Next;
                 tail = previous;
-                current = null;
             }
             else
             {
-                previous.Next = current.Next;
-                current.Next.Previous = previous;
+                previous = current;
+                current = current.Next;
             }
             Length--;
 
