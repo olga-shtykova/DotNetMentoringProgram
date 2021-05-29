@@ -5,33 +5,27 @@ using Tasks.DoNotChange;
 
 namespace Tasks
 {
-    public class DoublyLinkedList<T> : IDoublyLinkedList<T>, IEnumerable
+    public class DoublyLinkedList<T> : IDoublyLinkedList<T>
     {
-        private Link<T> head;
-        private Link<T> tail;
+        private Link<T> _head;
+        private Link<T> _tail;
 
-        public int Length { get; private set; }
-
-        public DoublyLinkedList()
-        {
-            head = tail = null;
-            Length = 0;
-        }
+        public int Length { get; private set; }              
 
         public void Add(T e)
         {
-            if (head == null)
+            if (Length == 0)
             {
-                this.head = new Link<T>(e, null, null);
-                this.tail = head;
-                this.Length++;
+                _head = new Link<T>(e, null, null);
+                _tail = _head;
+                Length++;
             }
             else
             {
-                Link<T> newLink = new Link<T>(e, null, this.tail);
-                this.tail.Next = newLink;
-                this.tail = newLink;
-                this.Length++;
+                var link = new Link<T>(e, null, _tail);
+                _tail.Next = link;
+                _tail = link;
+                Length++;
             }
         }
 
@@ -39,42 +33,44 @@ namespace Tasks
         {
             if (index < 0 || index > Length)
             {
-                throw new ArgumentException();
+                throw new IndexOutOfRangeException($"{index} index is out of range!");
             }
 
-            Link<T> newLink = new Link<T>(e, this.head, this.tail);
+            var link = new Link<T>(e, _head, _tail);
 
-            if (head == null)
-            {   // list is empty, index must be 0
-                head = newLink;
-                tail = newLink;
+            if (Length == 0 && index == 0)
+            {
+                _head = link;
             }
-            else if (index == 0)
-            {   // add before head
-                newLink.Next = head;
-                head.Previous = newLink;
-                head = newLink;
+            else if (Length != 0 && index == 0)
+            {
+                link.Next = _head;
+                _head.Previous = link;
+                _head = link;
+                _head.Previous = null;
             }
             else if (index == Length)
-            {   // add after tail
-                newLink.Previous = tail;
-                tail.Next = newLink;
-                tail = newLink;
+            {
+                link.Previous = _tail;
+                _tail.Next = link;
+                _tail = link;
+                _tail.Next = null;
             }
             else
             {
-                Link<T> linkRef = head;
-                for (int i = 1; i < index; i++)
+                var current = _head;
+
+                for (int i = 0; i < index; i++)
                 {
-                    linkRef = linkRef.Next;
+                    current = current.Next;
                 }
 
-                // linkRef now points to the node before the add point
-                newLink.Next = linkRef.Next;
-                linkRef.Next = newLink;
-                newLink.Previous = linkRef;
-                newLink.Next.Previous = newLink;
-            }
+                link.Next = current.Previous.Next;
+                link.Previous = current.Previous;
+                current.Previous.Next = link;
+                current.Previous = link;
+            }           
+
             Length++;
         }
 
@@ -85,100 +81,94 @@ namespace Tasks
                 throw new IndexOutOfRangeException($"{index} index is out of range!");
             }
 
-            Link<T> linkRef = head;
+            var link = _head;
            
             for (int i = 0; i < index; i++)
             {
-                linkRef = linkRef.Next;
+                link = link.Next;
             }
-            return linkRef.Data;
+
+            return link.Data;
         }       
 
         public void Remove(T item)
         {
-            if (head != null)
+            if (_head == null) return;
+
+            if (_head.Data.Equals(item))
             {
-                if (head.Data.Equals(item))
-                {
-                    head = head.Next;
-                    Length--;
-                    return;
-                }
-
-                Link<T> current = head.Next;
-                Link<T> previous = head;
-
-                while (current != null)
-                {
-                    if (current.Data.Equals(item))
-                    {
-                        previous.Next = current.Next;
-                        Length--;
-                        return;
-                    }
-
-                    previous = current;
-                    current = current.Next;
-                }
+                _head.Next.Previous = null;
+                _head = _head.Next;
+                Length--;
+            }
+            else if (_tail.Data.Equals(item))
+            {
+                _tail.Previous.Next = null;
+                _tail = _tail.Previous;
+                Length--;
             }
             else
             {
-                Link<T> newLink = new Link<T>(item, head, tail);
-                head = newLink;
-                tail = newLink;
-                Length = 1;
+                var current = _head.Next;
+
+                while (current != null && current.Data.Equals(item))
+                {
+                    if (current.Data.Equals(item))
+                    {                            
+                        if (current.Next != null)
+                        {
+                            current.Previous.Next = current.Next;
+                            current.Next.Previous = current.Previous;
+                            Length--;
+                        }
+                    }                       
+
+                    current = current.Next;
+                }
             }
         }
 
         public T RemoveAt(int index)
         {
-            if (index >= Length || index < 0)
+            if (index >= Length || index < 0 || Length == 0)
             {
                 throw new IndexOutOfRangeException($"{index} index is out of range!");
             }
 
-            Link<T> linkRef = head;
-            
-            for (int i = 0; i < index; i++)
-            {
-                linkRef = linkRef.Next;                
-            }
+            var link = _head;
 
-            Link<T> current = head.Next;
-            Link<T> previous = head;
-
-            if (Length == 0)
+            if (index == 0)
             {
-                this.head = null;
-            }
-            else if (previous == null)
-            {
-                this.head = current.Next;
-                this.head.Previous = null;
+                link.Next.Previous = null;
+                _head = _head.Next;
+                Length--;
             }
             else if (index == Length - 1)
             {
-                previous.Next = current.Next;
-                tail = previous;
+                link = _tail;
+                link.Previous.Next = null;
+                _tail = _tail.Previous;
+                Length--;
             }
             else
             {
-                previous = current;
-                current = current.Next;
+                link = _head;
+
+                for (int i = 0; i < index; i++)
+                {
+                    link = link.Next;
+                }
+
+                link.Previous.Next = link.Next;
+                link.Next.Previous = link.Previous;
+                Length--;
             }
-            Length--;
 
-            return linkRef.Data;
+            return link.Data;
         }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return new DoublyLinkedListEnumerator<T>(this.head, this.tail, this.Length);
-        }
+        public IEnumerator<T> GetEnumerator() => new DoublyLinkedListEnumerator<T>(_head);
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();        
     }
 }

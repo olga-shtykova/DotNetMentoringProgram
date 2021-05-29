@@ -3,58 +3,39 @@ using System.Collections.Generic;
 
 namespace Tasks
 {
-    public struct DoublyLinkedListEnumerator<T> : IEnumerator<T>, IEnumerator
+    public class DoublyLinkedListEnumerator<T> : IEnumerator<T>
     {
-        private Link<T> head;
-        private Link<T> tail;
-        private Link<T> currentLink;
-        private int length;
-        private bool startedFlag;
+        private readonly Link<T> _head;
+        private Link<T> _currentLink;
 
-        public DoublyLinkedListEnumerator(Link<T> head, Link<T> tail, int length)
+        public DoublyLinkedListEnumerator(Link<T> head)
         {
-            this.head = head;
-            this.tail = tail;
-            this.currentLink = null;
-            this.length = length;
-            this.startedFlag = false;
+            _head = head;
         }
 
-        public T Current
-        {
-            get { return this.currentLink.Data; }
-        }
+        public T Current => _currentLink.Data;
 
-        public void Dispose()
-        {
-            this.head = null;
-            this.tail = null;
-            this.currentLink = null;
-        }
-
-        object IEnumerator.Current
-        {
-            get { return this.currentLink.Data; }
-        }
+        object IEnumerator.Current => _currentLink.Data;
 
         public bool MoveNext()
         {
-            if (this.startedFlag == false)
+            if (_currentLink == null)
             {
-                this.currentLink = this.head;
-                this.startedFlag = true;
-            }
-            else
-            {
-                this.currentLink = this.currentLink.Next;
+                _currentLink = _head;
+                return true;
             }
 
-            return this.currentLink != null;
+            _currentLink = _currentLink.Next;
+
+            return _currentLink != null;
         }
 
         public void Reset()
         {
-            this.currentLink = this.head;
+            _currentLink = null;
         }
+
+        public void Dispose()
+        { }
     }
 }

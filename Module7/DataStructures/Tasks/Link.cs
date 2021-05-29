@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tasks
+﻿namespace Tasks
 {
     public class Link<T>
     {
@@ -10,13 +6,11 @@ namespace Tasks
         public Link<T> Previous { get; set; }
         public T Data { get; set; }
 
-        public Link()
-        { }
         public Link(T data, Link<T> next, Link<T> previous)
         {
-            this.Data = data;
-            this.Next = next;
-            this.Previous = previous;
+            Data = data;
+            Next = next;
+            Previous = previous;
         }
     }
 }

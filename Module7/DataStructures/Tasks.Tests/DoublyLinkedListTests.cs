@@ -75,6 +75,17 @@ namespace Tasks.Tests
         }
 
         [Fact]
+        public void Should_Add_Element_To_An_Empty_List()
+        {
+            var list = new DoublyLinkedList<int>();
+            list.AddAt(0, 1);
+
+            var actualLength = list.Length;
+
+            actualLength.Should().Be(1);
+        }
+
+        [Fact]
         public void Should_Insert_Element_At_Specified_Position()
         {
             var list = new DoublyLinkedList<int>();
@@ -126,6 +137,20 @@ namespace Tasks.Tests
         }
 
         [Fact]
+        public void Should_Insert_Element_By_Index()
+        {
+            var list = new DoublyLinkedList<int>();
+            list.Add(1);
+            list.Add(3);
+            list.Add(4);
+
+            list.AddAt(1, 2);
+            var actualElement = list.ElementAt(1);
+
+            actualElement.Should().Be(2);
+        }
+
+        [Fact]
         public void Should_Throw_IndexOutOfRangeException_If_Index_Bigger_Than_Length()
         {
             var list = new DoublyLinkedList<int>();
@@ -148,6 +173,33 @@ namespace Tasks.Tests
             list.Remove(1);
 
             list.Should().BeEquivalentTo(new[] { 2, 1 });
+        }
+
+        [Fact]
+        public void Should_Remove_A_Particular_Element_In_The_List()
+        {
+            var list = new DoublyLinkedList<int>();
+            list.Add(1);
+            list.Add(2);
+            list.Add(3);
+            list.Add(4);
+
+            list.Remove(2);
+
+            list.Should().BeEquivalentTo(new[] { 1, 3, 4 });
+        }
+
+        [Fact]
+        public void Should_Remove_Last_Element_In_The_List()
+        {
+            var list = new DoublyLinkedList<int>();
+            list.Add(1);
+            list.Add(2);
+            list.Add(3);
+
+            list.Remove(3);
+
+            list.Should().BeEquivalentTo(new[] { 1, 2});
         }
 
         [Fact]
@@ -189,6 +241,18 @@ namespace Tasks.Tests
         }
 
         [Fact]
+        public void Should_Remove_First_Element()
+        {
+            var list = new DoublyLinkedList<int>();
+            list.Add(5);
+            list.Add(6);
+
+            var removedItem = list.RemoveAt(0);
+
+            removedItem.Should().Be(5);
+        }
+
+        [Fact]
         public void Should_Remove_Element_At_The_Specified_Position()
         {
             var list = new DoublyLinkedList<int>();
@@ -223,6 +287,23 @@ namespace Tasks.Tests
             var actualLength = list.Length;
 
             actualLength.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_Remove_Element_At_The_Specified_Position_In_The_List()
+        {
+            var list = new DoublyLinkedList<int>();
+            list.Add(5);
+            list.Add(2);
+            list.Add(5);
+            list.Add(3);
+            list.Add(4);
+
+            list.RemoveAt(2);
+
+            var elementAtIndex = list.ElementAt(2);
+
+            elementAtIndex.Should().Be(3);
         }
 
         [Fact]
