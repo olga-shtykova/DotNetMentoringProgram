@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 
 namespace KataTasks
 {
@@ -19,9 +20,19 @@ namespace KataTasks
             return string.IsNullOrEmpty(str) ? "0" : str;
         }
 
-        private static int AddNumbers(string str1, string str2)
+        private static BigInteger AddNumbers(string str1, string str2)
         {
-            return int.Parse(str1) + int.Parse(str2);
+            try
+            {
+                var result = BigInteger.Parse(str1) + BigInteger.Parse(str2);
+
+                return result;
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }
