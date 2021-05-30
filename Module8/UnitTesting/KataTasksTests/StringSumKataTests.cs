@@ -17,7 +17,11 @@ namespace KataTasksTests
         [Test]
         public void IfStringIsEmptyOrNull_SumReturnZero(string str1, string str2, string expectedResult)
         {
-           // To do
+            // Arrange/Act
+            var result = _stringSumKata.Sum(str1, str2);
+
+            // Assert
+            Assert.That(expectedResult, Is.EqualTo(result));
         }
     }
 }
