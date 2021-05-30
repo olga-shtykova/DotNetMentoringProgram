@@ -9,17 +9,19 @@ namespace KataTasks
             var naturalNum1 = CheckIfStringIsEmpty(str1);
             var naturalNum2 = CheckIfStringIsEmpty(str2);
 
-            int num1Int, num2Int;
+            var result = AddNumbers(naturalNum1, naturalNum2);
 
-            int.TryParse(naturalNum1, out num1Int);
-            int.TryParse(naturalNum2, out num2Int);
-
-            return (num1Int + num2Int).ToString();
+            return result.ToString();
         }
 
-        private string CheckIfStringIsEmpty(string str)
+        private static string CheckIfStringIsEmpty(string str)
         {
             return string.IsNullOrEmpty(str) ? "0" : str;
+        }
+
+        private static int AddNumbers(string str1, string str2)
+        {
+            return int.Parse(str1) + int.Parse(str2);
         }
     }
 }

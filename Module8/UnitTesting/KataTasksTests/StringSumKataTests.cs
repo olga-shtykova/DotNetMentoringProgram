@@ -23,5 +23,16 @@ namespace KataTasksTests
             // Assert
             Assert.That(expectedResult, Is.EqualTo(result));
         }
+
+        [TestCase("27", "100", "127")]
+        [Test]
+        public void IfDataIsValid_ReturnSum(string str1, string str2, string expectedResult)
+        {
+            // Arrange/Act
+            var result = _stringSumKata.Sum(str1, str2);
+
+            // Assert
+            Assert.That(expectedResult, Is.EqualTo(result));
+        }
     }
 }
