@@ -4,15 +4,12 @@ namespace KataTasks
 {
     public class OddEvenKata
     {
-        private const int From = 1;
-        private const int To = 100;
-
-        public string PrintNumbers()
+        public string PrintNumbers(int from, int to)
         {
             var result = string.Empty;
             var newNumber = string.Empty;
 
-            for (int number = From; number <= To; number++)
+            for (int number = from; number <= to; number++)
             {
                 if (IsPrime(number))
                 {
