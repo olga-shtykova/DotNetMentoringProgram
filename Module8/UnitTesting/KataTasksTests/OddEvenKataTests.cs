@@ -17,7 +17,10 @@ namespace KataTasksTests
         [Test]
         public void PrintOddEvenAndPrimeNumbers_ResultShouldNotBeNull(int num1, int num2)
         {
+            // Arrange/Act
             var result = _oddEvenKata.PrintNumbers(num1, num2);
+
+            // Assert
             Assert.NotNull(result, $"{result}");
         }
 
@@ -25,8 +28,10 @@ namespace KataTasksTests
         [Test]
         public void ShouldPrintOddEvenAndPrimeNumbers(int num1, int num2, string expectedResult)
         {
+            // Arrange/Act
             var result = _oddEvenKata.PrintNumbers(num1, num2);
 
+            // Assert
             Assert.That(expectedResult, Is.EqualTo(result));
         }
     }
