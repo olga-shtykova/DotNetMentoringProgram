@@ -8,18 +8,16 @@ namespace KataTasks
     {
         public double GetStats(List<int> numbers, Value stats)
         {
-            switch (stats)
+            if (numbers == null) throw new ArgumentNullException();
+
+            return stats switch
             {
-                case Value.Minimum:
-                    return numbers.Min();
-                case Value.Maximum:
-                    return numbers.Max();
-                case Value.NumberOfElements:
-                    return numbers.Count;
-                case Value.Average:
-                    return Math.Round(numbers.Average(), 6);
-            }
-            return 0;
+                Value.Minimum => numbers.Min(),
+                Value.Maximum => numbers.Max(),
+                Value.NumberOfElements => numbers.Count,
+                Value.Average => Math.Round(numbers.Average(), 6),
+                _ => 0
+            };
         }
 
         public enum Value

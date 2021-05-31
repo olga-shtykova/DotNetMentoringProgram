@@ -80,5 +80,14 @@ namespace KataTasksTests
             // Assert
             Assert.That(expectedResult, Is.EqualTo(result));
         }
+
+        [Test]
+        public void IfSequenceOfIntegerNumbersIsNull_ThrowArgumentNullException()
+        {
+            // Assert
+            Assert.That(() =>
+                    _calcStatsKata.GetStats(null, CalcStatsKata.Value.Maximum),
+                Throws.ArgumentNullException);
+        }
     }
 }
