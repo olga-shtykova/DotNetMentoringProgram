@@ -6,7 +6,7 @@ namespace KataTasks
     {
         public string PrintNumbers(int from, int to)
         {
-            if ((@from <= 0 || to <= 0) || (@from >= to))
+            if (from <= 0 || to <= 0 || from >= to)
                 throw new ArgumentException("Value does not fall within the expected range.");
 
             var result = string.Empty;
