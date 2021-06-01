@@ -34,5 +34,13 @@ namespace KataTasksTests
             // Assert
             Assert.That(expectedResult, Is.EqualTo(result));
         }
+
+        [TestCase(0, -10)]
+        [Test]
+        public void IfRangeIsInvalid_ThrowArgumentException(int num1, int num2)
+        {
+            // Assert
+            Assert.That(() => _oddEvenKata.PrintNumbers(num1, num2), Throws.Exception);
+        }
     }
 }

@@ -6,6 +6,9 @@ namespace KataTasks
     {
         public string PrintNumbers(int from, int to)
         {
+            if ((@from <= 0 || to <= 0) || (@from >= to))
+                throw new ArgumentException("Value does not fall within the expected range.");
+
             var result = string.Empty;
             var newNumber = string.Empty;
 
@@ -32,16 +35,12 @@ namespace KataTasks
         
         private static bool IsEven(int number)
         {
-            if (number >= 2 && number % 2 == 0)
-                return true;
-            return false;
+            return number >= 2 && number % 2 == 0;
         }
 
         private static bool IsOdd(int number)
         {
-            if (number % 2 != 0)
-                return true;
-            return false;
+            return number % 2 != 0;
         }
 
         private static bool IsPrime(int number)
@@ -50,8 +49,10 @@ namespace KataTasks
             if (IsEven(number)) return false;
 
             for (int i = 2; i <= number / 2; i++)
+            {
                 if (number % i == 0)
                     return false;
+            }
 
             return true;
         }
