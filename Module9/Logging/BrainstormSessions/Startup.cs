@@ -28,8 +28,10 @@ namespace BrainstormSessions
 
         public void Configure(IApplicationBuilder app,
             IWebHostEnvironment env,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddLog4Net("log4net.config");
+
             if (env.IsDevelopment())
             {
                 var repository = serviceProvider.GetRequiredService<IBrainstormSessionRepository>();
