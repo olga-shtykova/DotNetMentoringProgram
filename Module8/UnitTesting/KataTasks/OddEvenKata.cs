@@ -2,7 +2,7 @@
 
 namespace KataTasks
 {
-    public static class OddEvenKata
+    public class OddEvenKata
     {
         public static string PrintNumbers(int from, int to)
         {

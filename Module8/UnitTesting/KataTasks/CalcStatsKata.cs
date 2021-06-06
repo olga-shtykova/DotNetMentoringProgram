@@ -6,7 +6,7 @@ namespace KataTasks
 {
     public class CalcStatsKata
     {
-        public double GetStats(List<int> numbers, Value stats)
+        public static double GetStats(List<int> numbers, Value stats)
         {
             if (numbers == null) throw new ArgumentNullException();
 
@@ -16,7 +16,7 @@ namespace KataTasks
                 Value.Maximum => numbers.Max(),
                 Value.NumberOfElements => numbers.Count,
                 Value.Average => Math.Round(numbers.Average(), 6),
-                _ => 0
+                _ => throw new ArgumentException()
             };
         }
 

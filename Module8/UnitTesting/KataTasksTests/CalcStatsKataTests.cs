@@ -6,13 +6,11 @@ namespace KataTasksTests
 {
     public class CalcStatsKataTests
     {
-        private CalcStatsKata _calcStatsKata;
         private List<int> _list;
 
         [SetUp]
         public void Setup()
         {
-            _calcStatsKata = new CalcStatsKata();
             _list = new List<int> { 6, 9, 15, -2, 92, 11 };
         }
         
@@ -20,7 +18,7 @@ namespace KataTasksTests
         public void ShouldReturnMinValue()
         {
             // Arrange/Act
-            var result = _calcStatsKata.GetStats(_list, CalcStatsKata.Value.Minimum);
+            var result = CalcStatsKata.GetStats(_list, CalcStatsKata.Value.Minimum);
 
             // Assert
             double expectedResult = -2;
@@ -31,7 +29,7 @@ namespace KataTasksTests
         public void ShouldReturnMaxValue()
         {
             // Arrange/Act
-            var result = _calcStatsKata.GetStats(_list, CalcStatsKata.Value.Maximum);
+            var result = CalcStatsKata.GetStats(_list, CalcStatsKata.Value.Maximum);
 
             // Assert
             double expectedResult = 92;
@@ -42,7 +40,7 @@ namespace KataTasksTests
         public void ShouldReturnNumberOfElements()
         {
             // Arrange/Act
-            var result = _calcStatsKata.GetStats(_list, CalcStatsKata.Value.NumberOfElements);
+            var result = CalcStatsKata.GetStats(_list, CalcStatsKata.Value.NumberOfElements);
 
             // Assert
             double expectedResult = 6;
@@ -53,7 +51,7 @@ namespace KataTasksTests
         public void ShouldReturnAverageValue()
         {
             // Arrange/Act
-            var result = _calcStatsKata.GetStats(_list, CalcStatsKata.Value.Average);
+            var result = CalcStatsKata.GetStats(_list, CalcStatsKata.Value.Average);
 
             // Assert
             double expectedResult = 21.833333;
@@ -61,14 +59,10 @@ namespace KataTasksTests
         }
         
         [Test]
-        public void IfValueIsZero_ShouldReturnZero()
+        public void IfValueIsZero_ThrowArgumentException()
         {
-            // Arrange/Act
-            var result = _calcStatsKata.GetStats(_list, 0);
-
             // Assert
-            double expectedResult = 0;
-            Assert.That(expectedResult, Is.EqualTo(result));
+            Assert.That(() => CalcStatsKata.GetStats(_list, 0), Throws.Exception);
         }
 
         [Test]
@@ -76,7 +70,7 @@ namespace KataTasksTests
         {
             // Assert
             Assert.That(() =>
-                    _calcStatsKata.GetStats(null, CalcStatsKata.Value.Maximum),
+                    CalcStatsKata.GetStats(null, CalcStatsKata.Value.Maximum),
                 Throws.ArgumentNullException);
         }
     }
