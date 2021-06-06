@@ -5,31 +5,34 @@ namespace KataTasksTests
 {
     public class StringSumKataTests
     {
-        private StringSumKata _stringSumKata;
-
-        [SetUp]
-        public void Setup()
-        {
-            _stringSumKata = new StringSumKata();
-        }
-
         [TestCase(null, "", "0")]
         [Test]
         public void IfStringIsEmptyOrNull_SumReturnZero(string str1, string str2, string expectedResult)
         {
             // Arrange/Act
-            var result = _stringSumKata.Sum(str1, str2);
+            var result = StringSumKata.Sum(str1, str2);
 
             // Assert
             Assert.That(expectedResult, Is.EqualTo(result));
         }
 
-        [TestCase("27", "100", "127")]
+        [TestCase("2", "4", "0")]
+        [Test]
+        public void IfNumbersAreNotPrime_ReturnZero(string str1, string str2, string expectedResult)
+        {
+            // Arrange/Act
+            var result = StringSumKata.Sum(str1, str2);
+
+            // Assert
+            Assert.That(expectedResult, Is.EqualTo(result));
+        }
+
+        [TestCase("5", "7", "12")]
         [Test]
         public void IfDataIsValid_ReturnSum(string str1, string str2, string expectedResult)
         {
             // Arrange/Act
-            var result = _stringSumKata.Sum(str1, str2);
+            var result = StringSumKata.Sum(str1, str2);
 
             // Assert
             Assert.That(expectedResult, Is.EqualTo(result));
@@ -40,7 +43,7 @@ namespace KataTasksTests
         public void IfStringValueIsIntMaxValue_ReturnSum(string str1, string str2, string expectedResult)
         {
             // Arrange/Act
-            var result = _stringSumKata.Sum(str1, str2);
+            var result = StringSumKata.Sum(str1, str2);
 
             // Assert
             Assert.That(expectedResult, Is.EqualTo(result));
@@ -51,7 +54,7 @@ namespace KataTasksTests
         public void IfDataIsInvalid_ThrowArgumentException(string str1, string str2)
         {
             // Assert
-            Assert.That(() => _stringSumKata.Sum(str1, str2), Throws.Exception);
+            Assert.That(() => StringSumKata.Sum(str1, str2), Throws.Exception);
         }
     }
 }
