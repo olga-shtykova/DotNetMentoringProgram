@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BrainstormSessions.Core.Interfaces;
 using BrainstormSessions.Core.Model;
 using BrainstormSessions.ViewModels;
+using log4net;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrainstormSessions.Controllers
@@ -12,6 +13,7 @@ namespace BrainstormSessions.Controllers
     public class HomeController : Controller
     {
         private readonly IBrainstormSessionRepository _sessionRepository;
+        private readonly ILog _log = LogManager.GetLogger(typeof(HomeController));
 
         public HomeController(IBrainstormSessionRepository sessionRepository)
         {
@@ -30,6 +32,8 @@ namespace BrainstormSessions.Controllers
                 IdeaCount = session.Ideas.Count
             });
 
+            _log.Info("HomeController/Index");
+
             return View(model);
         }
 
@@ -44,6 +48,8 @@ namespace BrainstormSessions.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _log.Warn("Model is not valid.");
+
                 return BadRequest(ModelState);
             }
             else
@@ -53,6 +59,8 @@ namespace BrainstormSessions.Controllers
                     DateCreated = DateTimeOffset.Now,
                     Name = model.SessionName
                 });
+
+                _log.Debug($"Session {model.SessionName} was created.");
             }
 
             return RedirectToAction(actionName: nameof(Index));
