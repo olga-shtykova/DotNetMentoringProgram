@@ -22,7 +22,7 @@ namespace BrainstormSessions.Controllers
 
             if (!id.HasValue)
             {
-                _log.Warn("Id is not valid.");
+                _log.Warn($"Id {id} is not valid.");
 
                 return RedirectToAction(actionName: nameof(Index),
                     controllerName: "Home");
@@ -32,7 +32,7 @@ namespace BrainstormSessions.Controllers
             
             if (session == null)
             {
-                _log.Warn("Session was not found.");
+                _log.Warn($"Session {id.Value} was not found.");
 
                 return Content("Session not found.");
             }

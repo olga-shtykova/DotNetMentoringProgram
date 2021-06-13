@@ -48,7 +48,7 @@ namespace BrainstormSessions.Controllers
         {
             if (!ModelState.IsValid)
             {
-                _log.Warn("Model is not valid.");
+                _log.Warn($"Model {model.SessionName} is not valid: {ModelState.ValidationState}.");
 
                 return BadRequest(ModelState);
             }

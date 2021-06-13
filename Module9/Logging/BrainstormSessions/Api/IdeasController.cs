@@ -27,7 +27,7 @@ namespace BrainstormSessions.Api
             var session = await _sessionRepository.GetByIdAsync(sessionId);
             if (session == null)
             {
-                _log.Warn("Session was not found.");
+                _log.Warn($"Session {sessionId} was not found.");
 
                 return NotFound(sessionId);
             }
@@ -48,7 +48,7 @@ namespace BrainstormSessions.Api
         {
             if (!ModelState.IsValid)
             {
-                _log.Error("Model is not valid.");
+                _log.Error($"Model {model.Name} is not valid: {ModelState.ValidationState}.");
 
                 return BadRequest(ModelState);
             }
@@ -56,7 +56,7 @@ namespace BrainstormSessions.Api
             var session = await _sessionRepository.GetByIdAsync(model.SessionId);
             if (session == null)
             {
-                _log.Warn("Session was not found.");
+                _log.Warn($"Session {model.SessionId} was not found.");
 
                 return NotFound(model.SessionId);
             }
@@ -70,6 +70,8 @@ namespace BrainstormSessions.Api
             session.AddIdea(idea);
 
             await _sessionRepository.UpdateAsync(session);
+
+            _log.Info($"Idea Id: {idea.Id}, Name: {idea.Name} was added to the session {session.Id}.");
 
             return Ok(session);
         }
@@ -85,7 +87,7 @@ namespace BrainstormSessions.Api
 
             if (session == null)
             {
-                _log.Warn("Session was not found.");
+                _log.Warn($"Session {session.Id} was not found.");
 
                 return NotFound(sessionId);
             }
@@ -111,7 +113,7 @@ namespace BrainstormSessions.Api
         {
             if (!ModelState.IsValid)
             {
-                _log.Error("Model is not valid.");
+                _log.Error($"Model {model.Name} is not valid: {ModelState.ValidationState}.");
 
                 return BadRequest(ModelState);
             }
@@ -120,7 +122,7 @@ namespace BrainstormSessions.Api
 
             if (session == null)
             {
-                _log.Warn("Session was not found.");
+                _log.Warn($"Session {model.SessionId} was not found.");
 
                 return NotFound(model.SessionId);
             }
