@@ -33,6 +33,7 @@ namespace BrainstormSessions.Controllers
             if (session == null)
             {
                 _log.Warn($"Session {id.Value} was not found.");
+                _log.Error($"Session {id.Value} was not found.");
 
                 return Content("Session not found.");
             }

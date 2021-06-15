@@ -28,6 +28,7 @@ namespace BrainstormSessions.Api
             if (session == null)
             {
                 _log.Warn($"Session {sessionId} was not found.");
+                _log.Error($"Session {sessionId} was not found.");
 
                 return NotFound(sessionId);
             }
@@ -113,7 +114,7 @@ namespace BrainstormSessions.Api
         {
             if (!ModelState.IsValid)
             {
-                _log.Error($"Model {model.Name} is not valid: {ModelState.ValidationState}.");
+                _log.Error($"Model {model} is not valid.");
 
                 return BadRequest(ModelState);
             }
