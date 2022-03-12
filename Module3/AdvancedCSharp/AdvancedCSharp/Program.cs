@@ -11,7 +11,7 @@ namespace AdvancedCSharp
         {
             try
             {
-                string rootPath = @"D:\Documents\C#books";
+                string rootPath = @"D:\Documents\Books";
 
                 var fsvisitor = new FileSystemVisitor(rootPath, (info) => true);
 
@@ -23,24 +23,30 @@ namespace AdvancedCSharp
                     Console.WriteLine($"Directory found: {e.FoundItem.Name}");
 
                 fsvisitor.FileFound += (sender, e) =>
-                    Console.WriteLine($"\tFile found: {e.FoundItem.Name}");               
+                    Console.WriteLine($"File found: {e.FoundItem.Name}");
 
+                // Find a directory according to filter and continue/stop the search.                
                 fsvisitor.FilteredDirectoryFound += (sender, e) =>
                 {
-                    Console.WriteLine($"Filtered directory found: {e.FoundItem.Name}");
-
-                    if (e.FoundItem.Name == "Patterns")
+                    if (e.FoundItem.Name == "C#Books")
                     {
+                        Console.WriteLine($"Filtered directory found: {e.FoundItem.Name}");
+                        e.Option = SearchType.Continue;
+                    }
+                };
+
+                // Find a file according to filter and continue/stop the search.
+                fsvisitor.FilteredFileFound += (sender, e) =>
+                {
+                    if (e.FoundItem.Name == "Design_Patterns.txt")
+                    {
+                        Console.WriteLine($"Filtered file found: {e.FoundItem.Name}");
                         e.Option = SearchType.Stop;
                     }
                 };
 
-                fsvisitor.FilteredFileFound += (sender, e) =>
-                    Console.WriteLine($"\tFiltered file found: {e.FoundItem.Name}");        
-
                 var fileSystemInfo = fsvisitor.GetFilesInDirectories().ToArray();
             }
-
             catch (DirectoryNotFoundException ex)
             {
                 Console.WriteLine(ex.Message);

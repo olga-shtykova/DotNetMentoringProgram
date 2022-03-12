@@ -12,13 +12,8 @@ namespace FileVisitorClassLibrary
        
         public FileSystemVisitor(string path,
             Func<FileSystemInfo, bool> filter = null, IFileSystem filesystem = null)
-            : this(new DirectoryInfo(path), filter)
-        { }
-
-        public FileSystemVisitor(DirectoryInfo startDirectory,
-            Func<FileSystemInfo, bool> filter = null)
         {
-            _startDirectory = startDirectory;
+            _startDirectory = new DirectoryInfo(path);
             _filter = filter;
         }
 
@@ -37,11 +32,12 @@ namespace FileVisitorClassLibrary
             if (!Directory.Exists(startDirectory.ToString()))
             {
                 throw new DirectoryNotFoundException($"Directory was not found.");
-            }
+            }            
 
             OnEvent(Start);
 
-            foreach (var fileSystemInfo in IterateThroughDirectories(_startDirectory, SearchChoice.Continue))
+            foreach (var fileSystemInfo in IterateThroughDirectories(_startDirectory, 
+                SearchChoice.Continue))
             {
                 yield return fileSystemInfo;
             }
@@ -49,13 +45,13 @@ namespace FileVisitorClassLibrary
             OnEvent(Finish);
         }
 
-        private IEnumerable<FileSystemInfo> IterateThroughDirectories(DirectoryInfo directoryInfo, SearchChoice searchChoice)
-        {
-            ItemTypeArgs<FileSystemInfo> e = new ItemTypeArgs<FileSystemInfo>();
+        private IEnumerable<FileSystemInfo> IterateThroughDirectories(DirectoryInfo directoryInfo, 
+            SearchChoice searchChoice)
+        {    
+            var e = new ItemTypeArgs<FileSystemInfo>();
+            var itemsInDirectory = directoryInfo.EnumerateFileSystemInfos();           
 
-            var files = directoryInfo.EnumerateFileSystemInfos();           
-
-            foreach (var fileSystemInfo in files)
+            foreach (var fileSystemInfo in itemsInDirectory)
             {
                 e.FoundItem = fileSystemInfo;
 
@@ -76,11 +72,11 @@ namespace FileVisitorClassLibrary
                 if (fileSystemInfo is FileInfo file)
                 {
                     searchChoice.Choice = ProcessItem(file, _filter, FileFound,
-                        FilteredFileFound, OnEvent);
+                        FilteredFileFound, OnEvent);                    
                 }
 
                 yield return fileSystemInfo;
-            }
+            }            
         }
 
         #region Private Methods
