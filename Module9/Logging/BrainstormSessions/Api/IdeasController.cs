@@ -5,19 +5,23 @@ using System.Threading.Tasks;
 using BrainstormSessions.ClientModels;
 using BrainstormSessions.Core.Interfaces;
 using BrainstormSessions.Core.Model;
-using log4net;
+//using log4net;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace BrainstormSessions.Api
 {
     public class IdeasController : ControllerBase
     {
         private readonly IBrainstormSessionRepository _sessionRepository;
-        private readonly ILog _log = LogManager.GetLogger(typeof(IdeasController));
+        //private readonly ILog _log = LogManager.GetLogger(typeof(IdeasController));
+        private readonly ILogger<IdeasController> _logger;
 
-        public IdeasController(IBrainstormSessionRepository sessionRepository)
+        public IdeasController(IBrainstormSessionRepository sessionRepository,
+            ILogger<IdeasController> logger)
         {
             _sessionRepository = sessionRepository;
+            _logger = logger;
         }
 
         #region snippet_ForSessionAndCreate
@@ -27,8 +31,10 @@ namespace BrainstormSessions.Api
             var session = await _sessionRepository.GetByIdAsync(sessionId);
             if (session == null)
             {
-                _log.Warn($"Session {sessionId} was not found.");
-                _log.Error($"Session {sessionId} was not found.");
+                //_log.Warn($"Session {sessionId} was not found.");
+                //_log.Error($"Session {sessionId} was not found.");
+                _logger.LogWarning($"Session {sessionId} was not found.");
+                _logger.LogError($"Session {sessionId} was not found.");
 
                 return NotFound(sessionId);
             }
@@ -45,11 +51,12 @@ namespace BrainstormSessions.Api
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody]NewIdeaModel model)
+        public async Task<IActionResult> Create([FromBody] NewIdeaModel model)
         {
             if (!ModelState.IsValid)
             {
-                _log.Error($"Model {model.Name} is not valid: {ModelState.ValidationState}.");
+                //_log.Error($"Model {model.Name} is not valid: {ModelState.ValidationState}.");
+                _logger.LogError($"Model {model.Name} is not valid: {ModelState.ValidationState}.");
 
                 return BadRequest(ModelState);
             }
@@ -57,7 +64,8 @@ namespace BrainstormSessions.Api
             var session = await _sessionRepository.GetByIdAsync(model.SessionId);
             if (session == null)
             {
-                _log.Warn($"Session {model.SessionId} was not found.");
+                //_log.Warn($"Session {model.SessionId} was not found.");
+                _logger.LogWarning($"Session {model.SessionId} was not found.");
 
                 return NotFound(model.SessionId);
             }
@@ -72,7 +80,8 @@ namespace BrainstormSessions.Api
 
             await _sessionRepository.UpdateAsync(session);
 
-            _log.Info($"Idea Id: {idea.Id}, Name: {idea.Name} was added to the session {session.Id}.");
+            //_log.Info($"Idea Id: {idea.Id}, Name: {idea.Name} was added to the session {session.Id}.");
+            _logger.LogInformation($"Idea Id: {idea.Id}, Name: {idea.Name} was added to the session {session.Id}.");
 
             return Ok(session);
         }
@@ -88,7 +97,8 @@ namespace BrainstormSessions.Api
 
             if (session == null)
             {
-                _log.Warn($"Session {session.Id} was not found.");
+                //_log.Warn($"Session {session.Id} was not found.");
+                _logger.LogWarning($"Session {session.Id} was not found.");
 
                 return NotFound(sessionId);
             }
@@ -110,11 +120,12 @@ namespace BrainstormSessions.Api
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<BrainstormSession>> CreateActionResult([FromBody]NewIdeaModel model)
+        public async Task<ActionResult<BrainstormSession>> CreateActionResult([FromBody] NewIdeaModel model)
         {
             if (!ModelState.IsValid)
             {
-                _log.Error($"Model {model} is not valid.");
+                //_log.Error($"Model {model} is not valid.");
+                _logger.LogError($"Model {model} is not valid.");
 
                 return BadRequest(ModelState);
             }
@@ -123,7 +134,8 @@ namespace BrainstormSessions.Api
 
             if (session == null)
             {
-                _log.Warn($"Session {model.SessionId} was not found.");
+                //_log.Warn($"Session {model.SessionId} was not found.");
+                _logger.LogWarning($"Session {model.SessionId} was not found.");
 
                 return NotFound(model.SessionId);
             }
@@ -136,7 +148,8 @@ namespace BrainstormSessions.Api
             };
             session.AddIdea(idea);
 
-            _log.Info($"Session was created: {session.Id}");
+            //_log.Info($"Session was created: {session.Id}");
+            _logger.LogInformation($"Session was created: {session.Id}");
 
             await _sessionRepository.UpdateAsync(session);
 

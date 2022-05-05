@@ -5,19 +5,23 @@ using System.Threading.Tasks;
 using BrainstormSessions.Core.Interfaces;
 using BrainstormSessions.Core.Model;
 using BrainstormSessions.ViewModels;
-using log4net;
+//using log4net;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace BrainstormSessions.Controllers
 {
     public class HomeController : Controller
     {
         private readonly IBrainstormSessionRepository _sessionRepository;
-        private readonly ILog _log = LogManager.GetLogger(typeof(HomeController));
+        //private readonly ILog _log = LogManager.GetLogger(typeof(HomeController));
+        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(IBrainstormSessionRepository sessionRepository)
+        public HomeController(IBrainstormSessionRepository sessionRepository,
+            ILogger<HomeController> logger)
         {
             _sessionRepository = sessionRepository;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
@@ -32,7 +36,8 @@ namespace BrainstormSessions.Controllers
                 IdeaCount = session.Ideas.Count
             });
 
-            _log.Info("HomeController/Index");
+            //_log.Info("HomeController/Index");
+            _logger.LogInformation("HomeController/Index");
 
             return View(model);
         }
@@ -48,7 +53,8 @@ namespace BrainstormSessions.Controllers
         {
             if (!ModelState.IsValid)
             {
-                _log.Warn($"Model {model.SessionName} is not valid: {ModelState.ValidationState}.");
+                //_log.Warn($"Model {model.SessionName} is not valid: {ModelState.ValidationState}.");
+                _logger.LogWarning($"Model - {model.SessionName} - is not valid: {ModelState.ValidationState}.");
 
                 return BadRequest(ModelState);
             }
@@ -60,7 +66,8 @@ namespace BrainstormSessions.Controllers
                     Name = model.SessionName
                 });
 
-                _log.Debug($"Session {model.SessionName} was created.");
+                //_log.Debug($"Session {model.SessionName} was created.");
+                _logger.LogDebug($"Session - {model.SessionName} - was created.");
             }
 
             return RedirectToAction(actionName: nameof(Index));

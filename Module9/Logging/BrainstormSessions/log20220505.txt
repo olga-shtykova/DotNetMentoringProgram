@@ -1,0 +1,17 @@
+2022-05-05 23:09:24.720 +03:00 [INF] Starting web host
+2022-05-05 23:09:34.118 +03:00 [INF] HomeController/Index
+2022-05-05 23:10:24.565 +03:00 [DBG] Session - One - was created.
+2022-05-05 23:10:24.579 +03:00 [INF] HomeController/Index
+2022-05-05 23:10:28.897 +03:00 [DBG] Session - Second - was created.
+2022-05-05 23:10:28.914 +03:00 [INF] HomeController/Index
+2022-05-05 23:10:35.633 +03:00 [DBG] Session - Third - was created.
+2022-05-05 23:10:35.645 +03:00 [INF] HomeController/Index
+2022-05-05 23:10:46.765 +03:00 [DBG] SessionController/Index
+2022-05-05 23:10:46.802 +03:00 [DBG] Session Id: 1
+2022-05-05 23:11:07.454 +03:00 [INF] HomeController/Index
+2022-05-05 23:11:10.929 +03:00 [DBG] SessionController/Index
+2022-05-05 23:11:10.936 +03:00 [DBG] Session Id: 2
+2022-05-05 23:11:25.282 +03:00 [INF] HomeController/Index
+2022-05-05 23:11:30.405 +03:00 [DBG] SessionController/Index
+2022-05-05 23:11:30.409 +03:00 [DBG] Session Id: 2
+2022-05-05 23:11:41.785 +03:00 [INF] HomeController/Index

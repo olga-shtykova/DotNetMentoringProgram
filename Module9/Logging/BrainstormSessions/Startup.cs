@@ -30,7 +30,7 @@ namespace BrainstormSessions
             IWebHostEnvironment env,
             IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddLog4Net("log4net.config");
+            //loggerFactory.AddLog4Net("log4net.config");
 
             if (env.IsDevelopment())
             {
